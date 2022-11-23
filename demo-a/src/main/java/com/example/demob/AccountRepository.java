@@ -1,6 +1,4 @@
-package com.example.demoa;
-
-import java.util.List;
+package com.example.demob;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

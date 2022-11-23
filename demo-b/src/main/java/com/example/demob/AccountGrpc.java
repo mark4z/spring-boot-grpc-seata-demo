@@ -1,4 +1,4 @@
-package com.example.demoa;
+package com.example.demob;
 
 import demo.a.account.AccountReply;
 import demo.a.account.AccountRequest;
@@ -15,7 +15,6 @@ import java.util.Optional;
 @Service
 public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
     private final AccountRepository accountRepository;
-
     public AccountGrpc(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }

@@ -1,12 +1,11 @@
-package com.example.demoa;
+package com.example.demob;
 
-import com.google.protobuf.Message;
 import demo.a.account.AccountReply;
 import demo.a.account.AccountRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.channelz.v1.Channel;
 import io.grpc.stub.StreamObserver;
+import io.seata.integration.grpc.interceptor.client.ClientTransactionInterceptor;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
                 // needing certificates.
                 .usePlaintext()
                 .build();
-        this.accountBlockingStub = demo.a.account.AccountGrpc.newBlockingStub(channel);
+        this.accountBlockingStub = demo.a.account.AccountGrpc.newBlockingStub(channel).withInterceptors(new ClientTransactionInterceptor());
     }
 
     @Override
@@ -46,7 +45,7 @@ public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    @GlobalTransactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void update(AccountRequest request, StreamObserver<AccountReply> responseObserver) {
         Optional<Account> account = accountRepository.findById(request.getId());
         AccountReply.Builder reply = AccountReply.newBuilder();

@@ -1,15 +1,13 @@
-package com.example.demoa;
+package com.example.demob;
 
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 public class DemoController {
-    private final AccountGrpc accountGrpc;
     private final AccountRepository accountRepository;
 
-    public DemoController(AccountGrpc accountGrpc, AccountRepository accountRepository) {
-        this.accountGrpc = accountGrpc;
+    public DemoController(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 

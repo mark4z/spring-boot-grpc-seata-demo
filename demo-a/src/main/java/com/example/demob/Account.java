@@ -1,4 +1,4 @@
-package com.example.demoa;
+package com.example.demob;
 
 import lombok.Data;
 

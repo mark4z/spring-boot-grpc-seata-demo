@@ -1,8 +1,10 @@
-package com.example.demoa;
+package com.example.demob;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptors;
 import io.grpc.protobuf.services.ProtoReflectionService;
+import io.seata.integration.grpc.interceptor.server.ServerTransactionInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -31,6 +33,7 @@ public class DemoBApplication {
             Server start = ServerBuilder.forPort(port)
                     .addService(accountGrpc)
                     .addService(ProtoReflectionService.newInstance())
+                    .addService(ServerInterceptors.intercept(accountGrpc, new ServerTransactionInterceptor()))
                     .build()
                     .start();
             log.info("Server started, listening on " + start.getPort());
