@@ -15,18 +15,18 @@ import java.util.Optional;
  */
 @Service
 public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
-    private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
 
-    public AccountGrpc(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public AccountGrpc(AccountMapper accountMapper) {
+        this.accountMapper = accountMapper;
     }
 
     @Override
     public void getAccount(AccountRequest request, StreamObserver<AccountReply> responseObserver) {
-        Optional<Account> account = accountRepository.findById(request.getId());
+        Account account = accountMapper.selectById(request.getId());
         AccountReply.Builder reply = AccountReply.newBuilder();
-        reply.setId(account.get().getId());
-        reply.setAmount(account.get().getAmount());
+        reply.setId(account.getId());
+        reply.setAmount(account.getAmount());
         responseObserver.onNext(reply.build());
         responseObserver.onCompleted();
     }
@@ -35,15 +35,15 @@ public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
     @Transactional(rollbackFor = Exception.class)
     public void update(AccountRequest request, StreamObserver<AccountReply> responseObserver) {
         System.out.println("xid:" + RootContext.getXID());
-        Optional<Account> account = accountRepository.findById(request.getId());
+        Account account = accountMapper.selectById(request.getId());
         AccountReply.Builder reply = AccountReply.newBuilder();
-        if (account.isPresent()) {
-            account.get().setAmount(request.getAmount());
-            Account save = accountRepository.save(account.get());
-            System.out.println("update: " + save);
+        if (account != null) {
+            account.setAmount(request.getAmount());
+            accountMapper.updateById(account);
+            System.out.println("update: " + account);
 
-            reply.setId(account.get().getId());
-            reply.setAmount(account.get().getAmount());
+            reply.setId(account.getId());
+            reply.setAmount(account.getAmount());
         }
         responseObserver.onNext(reply.build());
         responseObserver.onCompleted();

@@ -1,5 +1,6 @@
 package com.example.demob;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptors;
@@ -27,7 +28,7 @@ public class DemoBApplication {
         @Resource
         private AccountGrpc accountGrpc;
         @Resource
-        private AccountRepository accountRepository;
+        private AccountMapper accountMapper;
 
         @Override
         public void run(String... args) throws Exception {
@@ -40,9 +41,11 @@ public class DemoBApplication {
                     .start();
             log.info("Server started, listening on " + start.getPort());
 
+            accountMapper.delete(new QueryWrapper<>());
             Account account = new Account();
+            account.setId(1L);
             account.setAmount(1000L);
-            Account save = accountRepository.save(account);
+            accountMapper.insert(account);
         }
     }
 
