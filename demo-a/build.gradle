@@ -32,11 +32,11 @@ repositories {
 def grpcVersion = '1.39.0' // CURRENT_GRPC_VERSION
 def protobufVersion = '3.17.2'
 def protocVersion = protobufVersion
-def seataVersion = '1.4.2'
+def seataVersion = '1.5.2'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -58,9 +58,9 @@ tasks.named('test') {
 }
 
 protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}:osx-x86_64" }
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}:osx-x86_64" }
     }
     generateProtoTasks {
         all()*.plugins { grpc {} }

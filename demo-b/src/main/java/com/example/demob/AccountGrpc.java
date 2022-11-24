@@ -3,6 +3,7 @@ package com.example.demob;
 import demo.a.account.AccountReply;
 import demo.a.account.AccountRequest;
 import io.grpc.stub.StreamObserver;
+import io.seata.core.context.RootContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Service
 public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
     private final AccountRepository accountRepository;
+
     public AccountGrpc(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
@@ -32,11 +34,13 @@ public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(AccountRequest request, StreamObserver<AccountReply> responseObserver) {
+        System.out.println("xid:" + RootContext.getXID());
         Optional<Account> account = accountRepository.findById(request.getId());
         AccountReply.Builder reply = AccountReply.newBuilder();
         if (account.isPresent()) {
             account.get().setAmount(request.getAmount());
-            accountRepository.save(account.get());
+            Account save = accountRepository.save(account.get());
+            System.out.println("update: " + save);
 
             reply.setId(account.get().getId());
             reply.setAmount(account.get().getAmount());

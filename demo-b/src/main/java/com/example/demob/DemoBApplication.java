@@ -19,13 +19,15 @@ public class DemoBApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DemoBApplication.class, args);
-        log.info("demo-a started");
+        log.info("demo-b started");
     }
 
     @Component
     static class GrpcServerRunner implements CommandLineRunner {
         @Resource
         private AccountGrpc accountGrpc;
+        @Resource
+        private AccountRepository accountRepository;
 
         @Override
         public void run(String... args) throws Exception {
@@ -37,6 +39,10 @@ public class DemoBApplication {
                     .build()
                     .start();
             log.info("Server started, listening on " + start.getPort());
+
+            Account account = new Account();
+            account.setAmount(1000L);
+            Account save = accountRepository.save(account);
         }
     }
 

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -20,10 +20,12 @@ public class DemoAApplication {
         log.info("demo-a started");
     }
 
-    @Component
+    @Service
     static class GrpcServerRunner implements CommandLineRunner {
         @Resource
         private AccountGrpc accountGrpc;
+        @Resource
+        private AccountMapper accountRepository;
 
         @Override
         public void run(String... args) throws Exception {
@@ -34,6 +36,13 @@ public class DemoAApplication {
                     .build()
                     .start();
             log.info("Server started, listening on " + start.getPort());
+
+            Account account = new Account();
+            account.setId(1L);
+            account.setAmount(1000L);
+            System.out.println("init accounting");
+            Account save = accountRepository.save(account);
+            System.out.println("init account: " + save);
         }
     }
 
