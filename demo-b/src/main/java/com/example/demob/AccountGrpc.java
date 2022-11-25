@@ -1,5 +1,6 @@
 package com.example.demob;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import demo.a.account.AccountReply;
 import demo.a.account.AccountRequest;
 import io.grpc.stub.StreamObserver;
@@ -41,6 +42,11 @@ public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
             account.setAmount(request.getAmount());
             accountMapper.updateById(account);
             System.out.println("update: " + account);
+
+            UpdateWrapper<Account> objectUpdateWrapper = new UpdateWrapper<>();
+            objectUpdateWrapper.eq("id", request.getId());
+            objectUpdateWrapper.setSql("amount = amount + " + request.getAmount());
+            accountMapper.update(null, objectUpdateWrapper);
 
             reply.setId(account.getId());
             reply.setAmount(account.getAmount());

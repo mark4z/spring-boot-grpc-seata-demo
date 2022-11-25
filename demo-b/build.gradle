@@ -56,10 +56,16 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+import org.apache.tools.ant.taskdefs.condition.Os
+def protoOnOs = ""
+if (Os.isFamily(Os.FAMILY_MAC)) {
+    protoOnOs = "osx-x86_64"
+}
+
 protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}:osx-x86_64" }
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}:${protoOnOs}" }
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}:osx-x86_64" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}:${protoOnOs}" }
     }
     generateProtoTasks {
         all()*.plugins { grpc {} }

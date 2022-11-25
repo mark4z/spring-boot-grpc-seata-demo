@@ -56,11 +56,13 @@ public class AccountGrpc extends demo.a.account.AccountGrpc.AccountImplBase {
             reply.setId(account.getId());
             reply.setAmount(account.getAmount());
 
+
+            account.setAmount(request.getAmount());
+            accountMapper.updateById(account);
+
             if (request.getAmount() == -1L) {
                 throw new RuntimeException("amount can not be -1");
             }
-            account.setAmount(request.getAmount());
-            accountMapper.insert(account);
         }
         responseObserver.onNext(reply.build());
         responseObserver.onCompleted();
